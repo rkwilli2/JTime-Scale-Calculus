@@ -10,8 +10,8 @@ package timescalecalculus.exceptions;
  */
 public class NotInTimeScaleException extends TimeScaleException {
 
-	public NotInTimeScaleException() {
-		super("Given t is not in the time scale.");
+	public NotInTimeScaleException(double t) {
+		super("Given t=" + t + " is not in the time scale.");
 	}
 	
 }

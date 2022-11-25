@@ -58,20 +58,28 @@ public class IntegerTimeScale extends TimeScale {
 	public double sigma(double t) throws NotInTimeScaleException {
 		if (isInTimeScale(t))
 			return t + scalar;
-		throw new NotInTimeScaleException();
+		throw new NotInTimeScaleException(t);
 	}
 
 	@Override
 	public double rho(double t) throws NotInTimeScaleException {
 		if (isInTimeScale(t))
 			return t - scalar;
-		throw new NotInTimeScaleException();
+		throw new NotInTimeScaleException(t);
 	}
 
 	@Override
 	public TimeScale getTKappa() {
 		// Sup{this} = INFINITY, so return this TimeScale
 		return this;
+	}
+	
+	@Override
+	public double deltaIntegral(Function f, double lowerBound, double upperBound) {
+		
+		// TODO
+		
+		return 0;
 	}
 	
 }

@@ -34,14 +34,14 @@ public class QuantumTimeScale extends TimeScale {
 	public double sigma(double t) throws NotInTimeScaleException {
 		if (isInTimeScale(t))
 			return q * t;
-		throw new NotInTimeScaleException();
+		throw new NotInTimeScaleException(t);
 	}
 
 	@Override
 	public double rho(double t) throws NotInTimeScaleException {
 		if (isInTimeScale(t))
 			return t / q;
-		return 0;
+		throw new NotInTimeScaleException(t);
 	}
 
 	@Override

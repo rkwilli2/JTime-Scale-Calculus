@@ -1,5 +1,7 @@
 package timescalecalculus;
 
+import java.util.List;
+
 import timescalecalculus.exceptions.*;
 
 /**
@@ -14,6 +16,8 @@ import timescalecalculus.exceptions.*;
  * @since 11/24/2022
  */
 public abstract class TimeScale {
+	
+	protected List<Interval> set = null;
 
 	/**
 	 * Machine Epsilon for double-precision arithmetic.
@@ -134,6 +138,32 @@ public abstract class TimeScale {
 		// Symmetric difference quotient to approximate the derivative
 		
 		return (f.evaluate(t + DIFF_STEP) - f.evaluate(t - DIFF_STEP)) / (2 * DIFF_STEP);
+	}
+	
+	
+	/**
+	 * Numerically integrates a function f over some bounds
+	 * @param f - some function defined over the interval [lowerBound, upperBound]
+	 * @param lowerBound
+	 * @param upperBound
+	 * @return an approximation for the integral of f over the given interval
+	 * @throws NotInTimeScaleException - the bounds arne't in the interval
+	 */
+	public double deltaIntegral(Function f, double lowerBound, double upperBound)
+		throws NotInTimeScaleException {
+		
+		// If the bounds aren't in the time scale, throw an error
+		if(!isInTimeScale(lowerBound))
+			throw new NotInTimeScaleException(lowerBound);
+		if(!isInTimeScale(upperBound))
+			throw new NotInTimeScaleException(upperBound);
+		
+		// Begin numerical integration
+		
+		// TODO
+		
+		return 0;
+		
 	}
 	
 }

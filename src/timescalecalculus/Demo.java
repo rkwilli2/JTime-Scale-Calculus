@@ -17,7 +17,13 @@ public class Demo {
 
 			TimeScale reals = new RealTimeScale();
 			TimeScale ints = new IntegerTimeScale();
+			DefaultTimeScale ts = new DefaultTimeScale();
+			
+			for(double i = 0; i < 5; i += 2)
+				ts.addInterval(new Interval(i, i + 1));
 
+			// ts = [0,1], [2,3], [4,5]
+			
 			// f(x) = x^3 + x^2
 			Function f = (x) -> {
 				return x * x * x + x * x;
@@ -40,6 +46,19 @@ public class Demo {
 			
 			System.out.print("f', T=Z @ 1:\t");
 			System.out.println(ints.deltaDerivative(f, 1));
+			
+			// T = DefaultTimeScale
+				// f^delta (x),  mu(1) = 1
+					// delta f(1) = 2^3 + 2^2 - 1^3 - 1^2
+					// delta f(1) = 8 + 4 - 1 - 1 = 10
+				// f^delta (x), mu(.5) = 0
+					// f'(.5) = 3(.5)^2 + 2(.5)
+					// f'(.5) = 3/4 + 4/4 = 1.75
+			
+			System.out.print("f, T=ts @ 1:\t");
+			System.out.println(ts.deltaDerivative(f, 1));
+			System.out.print("f, T=ts @ .5:\t");
+			System.out.println(ts.deltaDerivative(f, .5));
 
 		} catch (TimeScaleException tse) {
 			tse.printStackTrace();
