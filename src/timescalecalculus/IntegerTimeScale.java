@@ -7,7 +7,7 @@ import timescalecalculus.exceptions.*;
  * An implementation of the time scale of the multiple of the integers
  * 
  * @author Richard Williams
- * @since 11/22/2022
+ * @since 11/24/2022
  */
 public class IntegerTimeScale extends TimeScale {
 
@@ -51,7 +51,7 @@ public class IntegerTimeScale extends TimeScale {
 	
 	@Override
 	public boolean isInTimeScale(double t) {
-		return Math.round(t) == (long)t;
+		return (t - offset) % scalar == 0;
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public class IntegerTimeScale extends TimeScale {
 	@Override
 	public double rho(double t) throws NotInTimeScaleException {
 		if (isInTimeScale(t))
-			return t + scalar;
+			return t - scalar;
 		throw new NotInTimeScaleException();
 	}
 

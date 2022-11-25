@@ -8,13 +8,23 @@ import timescalecalculus.exceptions.*;
  * <br>
  * Concrete methods are applicable to the arbitrary time scale whereas the 
  * abstract methods are to be defined by the user when the other time scale
- * implementations included in the library are not sufficient.
+ * implementations included in this library are not sufficient.
  * 
  * @author Richard Williams
- * @since 11/22/2022
+ * @since 11/24/2022
  */
 public abstract class TimeScale {
 
+	/**
+	 * Machine Epsilon for double-precision arithmetic.
+	 */
+	public static final double MACHINE_EPSILON = 2.2E-16;
+	
+	/**
+	 * Optimal step size for basic central differences to reduce error [2]
+	 */
+	public static final double DIFF_STEP = Math.pow(MACHINE_EPSILON, 1/3.0);
+	
 	/**
 	 * @param t - Some arbitrary element of the reals
 	 * @return whether or not t is an element of our time scale
@@ -102,25 +112,28 @@ public abstract class TimeScale {
 	
 	/**
 	 * Calculates the delta derivative of a given function at a point.
-	 * 
+	 * <br>
+	 * If t is not right scattered in T^kappa, returns a numerical approximation
+	 * made from the symmetric difference quotient. 
+	 * <br>
+	 * This approximation has an error of -DIFF_STEP^2 * f^(3)(t) / 6
+	 * <br>
 	 * We assume f is differentiable at t
+	 * @param f - Some arbitrary function defined from T to R.
 	 * @param t - Some arbitrary element of our time scale
-	 * @return
+	 * @return Delta derivative of f at t. 
 	 */
 	public double deltaDerivative(Function f, double t) throws NotInTimeScaleException {
 		
+		TimeScale tKappa = getTKappa();
+		
 		// By [1] Theorem 1.16 (ii)
-		if (isRightScattered(t))
-			return (f.evaluate(sigma(t)) - f.evaluate(t)) / mu(t);
+		if (tKappa.isRightScattered(t))
+			return (f.evaluate(tKappa.sigma(t)) - f.evaluate(t)) / tKappa.mu(t);
 		
-		// Uses numerical methods to calculate the 1st order
-		// derivative of f. Implementation is identical to that of
-		// derivative in scipy.misc
+		// Symmetric difference quotient to approximate the derivative
 		
-		// TODO Implement numerical differentiation
-		
-		double value = 0;
-		
-		return value;
+		return (f.evaluate(t + DIFF_STEP) - f.evaluate(t - DIFF_STEP)) / (2 * DIFF_STEP);
 	}
+	
 }
