@@ -7,7 +7,7 @@ import timescalecalculus.exceptions.*;
  * A demonstration on how to use the timescalecalculus package.
  * 
  * @author Richard Williams
- * @since 11/24/2022
+ * @since 11/25/2022
  */
 public class Demo {
 
@@ -19,46 +19,38 @@ public class Demo {
 			TimeScale ints = new IntegerTimeScale();
 			DefaultTimeScale ts = new DefaultTimeScale();
 			
-			for(double i = 0; i < 5; i += 2)
-				ts.addInterval(new Interval(i, i + 1));
-
+			for(int i = 0; i < 5; i += 2)
+				ts.addInterval(new Interval(i, i+1));
+			
 			// ts = [0,1], [2,3], [4,5]
 			
-			// f(x) = x^3 + x^2
+			// f(x) = 3x^2 + 2x
 			Function f = (x) -> {
-				return x * x * x + x * x;
+				return 3*x*x + 2*x;
 			};
 			
+			
 			// T = R
-				// f'(x) = 3x^2 + 2x
-				// f'(1) = 3 + 2 = 5
-				// Output will be 5 + some error proportional to TimeScale.DIFF_STEP ^ 2
-
-			System.out.print("f', T=R @ 1:\t");
-			System.out.println(reals.deltaDerivative(f, 1));
+				// F(x) = x^3 + x^2
+				// int_{0}^{2} f = 2^3 + 2^2 - 0
+				//				 = 8 + 4 = 12
+			
+			System.out.print("F, T=R for [0,2] = ");
+			System.out.println(reals.deltaIntegral(f, 0, 2));
 			
 			// T = Z
-				// delta f(x) = (x+1)^3 + (x+1)^2 - (x^3 + x^2)
-				// delta f(x) = x^3 + 3x^2 + 3x + 1 + x^2 + 2x + 1 - x^3 - x^2
-				// delta f(x) = 3x^2 + 5x + 2
-				// delta f(1) = 3 + 5 + 2 = 10
-				// Output is 10
+				// F(x) = sum from i=0 to 1 of f(i)
+				// int_{0}^{2} f = 3(0)^2 + 2(0) + 3(1)^2 + 2(1)
+				// 				 =  0 + 3 + 2 = 5
+			System.out.print("F, T=Z for [0,2] = ");
+			System.out.println(ints.deltaIntegral(f, 0, 2));
 			
-			System.out.print("f', T=Z @ 1:\t");
-			System.out.println(ints.deltaDerivative(f, 1));
-			
-			// T = DefaultTimeScale
-				// f^delta (x),  mu(1) = 1
-					// delta f(1) = 2^3 + 2^2 - 1^3 - 1^2
-					// delta f(1) = 8 + 4 - 1 - 1 = 10
-				// f^delta (x), mu(.5) = 0
-					// f'(.5) = 3(.5)^2 + 2(.5)
-					// f'(.5) = 3/4 + 4/4 = 1.75
-			
-			System.out.print("f, T=ts @ 1:\t");
-			System.out.println(ts.deltaDerivative(f, 1));
-			System.out.print("f, T=ts @ .5:\t");
-			System.out.println(ts.deltaDerivative(f, .5));
+			// T = ts
+				// int_{0}^{2} f = int{0}^{1} f + int_{1}^{2} f
+				//			     = (1)^3 + (1)^2 + 3(1)^2 + 2(1)
+				//			     = 1 + 1 + 3 + 2 = 7
+			System.out.print("F, T=R for [0,2] = ");
+			System.out.println(ts.deltaIntegral(f, 0, 2));
 
 		} catch (TimeScaleException tse) {
 			tse.printStackTrace();

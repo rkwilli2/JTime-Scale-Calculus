@@ -5,7 +5,7 @@ package timescalecalculus;
  * A representation of a closed interval
  * 
  * @author Richard Williams
- * @since 11/24/2022
+ * @since 11/25/2022
  */
 public class Interval {
 
@@ -52,5 +52,21 @@ public class Interval {
 	 */
 	public boolean canMerge(Interval interval) {
 		return contains(interval.getLeftEndpoint()) || contains(interval.getRightEndpoint());
+	}
+	
+	/**
+	 * @param rightEndpoint - the new rightEndpoint of the interval. Must be >= leftEndpoint
+	 * @return a new interval with an identical left endpoint and new right endpoint
+	 */
+	public Interval setRightEndpoint(double rightEndpoint) {
+		return new Interval(this.leftEndpoint, rightEndpoint);
+	}
+	
+	/**
+	 * @param leftEndpoint - the new left endpoint of the interval. Must be <= rightEndpoint
+	 * @return a new interval with an identical rightt endpoint and new left endpoint
+	 */
+	public Interval setLeftEndpoint(double leftEndpoint) {
+		return new Interval(leftEndpoint, this.rightEndpoint);
 	}
 }

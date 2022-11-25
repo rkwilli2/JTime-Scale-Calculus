@@ -9,12 +9,20 @@ import timescalecalculus.exceptions.*;
  * 
  * Implementation for the arbitrary TimeScale made with a set of points and intervals
  * TODO make user friendly via auto-sorting the set when a new interval is added,
- * TODO		"merging" intervals when applicable upon insertion, etc.
+ * 		"merging" intervals when applicable upon insertion, etc.
  * 
  * @author Richard Williams
- * @since 11/24/2022
+ * @since 11/25/2022
  */
 public class DefaultTimeScale extends TimeScale {
+	
+	/**
+	 * The list of intervals contained in this time scale.
+	 * <br>
+	 * It is not recommended that this should be used in time scales whose
+	 * supremum is INFINITY. 
+	 */
+	protected List<Interval> set = null;
 	
 	/**
 	 * Constructs an empty TimeScale.
@@ -36,6 +44,14 @@ public class DefaultTimeScale extends TimeScale {
 		return getIndexOf(t) != -1;
 	}
 
+	@Override
+	public Interval getIntervalFromValue(double t) throws NotInTimeScaleException {
+		int index = getIndexOf(t);
+		if(index == -1)
+			throw new NotInTimeScaleException(t);
+		return set.get(index);
+	}
+	
 	@Override
 	public double sigma(double t) throws NotInTimeScaleException {
 		int index = getIndexOf(t);

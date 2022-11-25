@@ -13,11 +13,9 @@ import timescalecalculus.exceptions.*;
  * implementations included in this library are not sufficient.
  * 
  * @author Richard Williams
- * @since 11/24/2022
+ * @since 11/25/2022
  */
 public abstract class TimeScale {
-	
-	protected List<Interval> set = null;
 
 	/**
 	 * Machine Epsilon for double-precision arithmetic.
@@ -34,6 +32,13 @@ public abstract class TimeScale {
 	 * @return whether or not t is an element of our time scale
 	 */
 	public abstract boolean isInTimeScale(double t);
+	
+	/**
+	 * @param t - some arbitrary value of our time scale
+	 * @return The interval that contains t that is in this time scale
+	 * @throws NotInTimeScaleException - t is not in this time scale
+	 */
+	public abstract Interval getIntervalFromValue(double t) throws NotInTimeScaleException;
 	
 	/**
 	 * The forward jump operator as defined by [1] Definition 1.1.
@@ -140,30 +145,97 @@ public abstract class TimeScale {
 		return (f.evaluate(t + DIFF_STEP) - f.evaluate(t - DIFF_STEP)) / (2 * DIFF_STEP);
 	}
 	
-	
 	/**
-	 * Numerically integrates a function f over some bounds
-	 * @param f - some function defined over the interval [lowerBound, upperBound]
-	 * @param lowerBound
-	 * @param upperBound
-	 * @return an approximation for the integral of f over the given interval
-	 * @throws NotInTimeScaleException - the bounds arne't in the interval
+	 * Approximates the integral of a given function over some bounds
+	 * <br>
+	 * It is strongly recommended to override this whenever possible.
+	 * @param f - some arbitrary function defined over the bounds given. We assume f is rd-continuous
+	 * @param lowerBound - the lower bound of the integral. We assume lowerBound <= upperBound
+	 * @param upperBound - the upper bound of the integral
+	 * @return a numerical approximation of the integral of f over [lowerBound, upperBound]
+	 * @throws NotInTimeScaleException - lowerBound and upperBound are not in this time scale
 	 */
 	public double deltaIntegral(Function f, double lowerBound, double upperBound)
 		throws NotInTimeScaleException {
 		
-		// If the bounds aren't in the time scale, throw an error
+		// Check bounds
 		if(!isInTimeScale(lowerBound))
 			throw new NotInTimeScaleException(lowerBound);
 		if(!isInTimeScale(upperBound))
 			throw new NotInTimeScaleException(upperBound);
 		
+		// If bounds are equal, return 0
+		if(lowerBound == upperBound)
+			return 0;
+		
 		// Begin numerical integration
+		double sum = 0;
+		double currentT = lowerBound;
+		Interval currentInterval;
 		
-		// TODO
+		while(currentT != upperBound) {
+			// If mu(t) == 0, we're in an interval. Use integrateInterval
+			if(mu(currentT) == 0) {
+				currentInterval = getIntervalFromValue(currentT);
+				
+				// If upperBound is in this interval, add integral from currentT to upperBound
+				if(currentInterval.contains(upperBound)) {
+					sum += integrateInterval(f, currentInterval.setRightEndpoint(upperBound));
+					currentT = upperBound;
+				}
+					
+				else {
+					sum += integrateInterval(f, currentInterval);
+					currentT = currentInterval.getRightEndpoint();
+				}
+			}
 		
-		return 0;
+			// Otherwise,
+			else {
+				// By [1] Theorem 1.75;
+				sum += mu(currentT) * f.evaluate(currentT);
+				currentT = sigma(currentT);
+			}
+		}
 		
+		return sum;
+	}
+	
+	/**
+	 * Integrates a function over a continuous interval
+	 * <br>
+	 * This should be used when overriding deltaIntegral for efficiency's sake
+	 * for some subclass of TimeScale.
+	 * @param f - some arbitrary function defined on the interval
+	 * @param interval - the interval to integrate over
+	 * @return a numerical approximation for the integral of f over interval
+	 */
+	protected double integrateInterval(Function f, Interval interval) {
+		
+		// Integral of any function from a to a is 0 :)
+		if(interval.getLeftEndpoint() == interval.getRightEndpoint())
+			return 0;
+		
+		// Uses trapezoidal approximation
+		// TODO look for better methods of approximation
+		double distance = interval.getRightEndpoint() - interval.getLeftEndpoint();
+		int numTerms = (int)(interval.getRightEndpoint() - interval.getLeftEndpoint());
+		
+		// Bound numTerms for computation's sake and error reduction
+		if(numTerms < 5000)
+			numTerms = 5000;
+		if(numTerms > 10000)
+			numTerms = 10000;
+		
+		double stepSize = distance / numTerms;
+		
+		double sum = f.evaluate(interval.getLeftEndpoint()) +
+				f.evaluate(interval.getRightEndpoint());
+		
+		for(int i = 1; i < numTerms - 1; i++)
+			sum += 2 * f.evaluate(interval.getLeftEndpoint() + i*stepSize);
+				
+		return sum * (stepSize / 2.0);
 	}
 	
 }

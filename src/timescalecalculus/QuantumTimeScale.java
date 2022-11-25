@@ -10,7 +10,7 @@ import timescalecalculus.exceptions.*;
  * {0, ..., q^-2, q^-1, q^0, q, q^2, ...}
  * 
  * @author Richard Williams
- * @since 11/24/2022
+ * @since 11/25/2022
  */
 public class QuantumTimeScale extends TimeScale {
 
@@ -28,6 +28,13 @@ public class QuantumTimeScale extends TimeScale {
 	public boolean isInTimeScale(double t) {
 		// Given t = q^a, return whether or not a is an integer
 		return (Math.log(t) / Math.log(q)) % 1 == 0;
+	}
+	
+	@Override
+	public Interval getIntervalFromValue(double t) throws NotInTimeScaleException {
+		if(isInTimeScale(t))
+			return new Point(t);
+		throw new NotInTimeScaleException(t);
 	}
 
 	@Override
