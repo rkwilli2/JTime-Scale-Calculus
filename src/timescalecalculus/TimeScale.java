@@ -202,7 +202,7 @@ public abstract class TimeScale {
 	}
 	
 	/**
-	 * Integrates a function over a continuous interval
+	 * Integrates a function over a continuous interval using Composite Boole's Rule [3]
 	 * <br>
 	 * This should be used when overriding deltaIntegral for efficiency's sake
 	 * for some subclass of TimeScale.
@@ -216,26 +216,36 @@ public abstract class TimeScale {
 		if(interval.getLeftEndpoint() == interval.getRightEndpoint())
 			return 0;
 		
-		// Uses trapezoidal approximation
-		// TODO look for better methods of approximation
+		double estimation;
+		double stepSize;
 		double distance = interval.getRightEndpoint() - interval.getLeftEndpoint();
-		int numTerms = (int)(interval.getRightEndpoint() - interval.getLeftEndpoint());
+		int numPoints = (int) distance;
 		
-		// Bound numTerms for computation's sake and error reduction
-		if(numTerms < 5000)
-			numTerms = 5000;
-		if(numTerms > 10000)
-			numTerms = 10000;
+		// Force bounds on numPoints for both computation/efficiency sake
+		if(numPoints < 7500)
+			numPoints = 7500;
+		if(numPoints > 10000)
+			numPoints = 10000;
 		
-		double stepSize = distance / numTerms;
+		stepSize = distance / numPoints;
 		
-		double sum = f.evaluate(interval.getLeftEndpoint()) +
-				f.evaluate(interval.getRightEndpoint());
+		// Begin Estimation
 		
-		for(int i = 1; i < numTerms - 1; i++)
-			sum += 2 * f.evaluate(interval.getLeftEndpoint() + i*stepSize);
-				
-		return sum * (stepSize / 2.0);
+		estimation  = 7 * f.evaluate(interval.getLeftEndpoint());
+		estimation += 7 * f.evaluate(interval.getRightEndpoint());
+		
+		for(int i = 1; i <= numPoints - 1; i += 2)
+			estimation += 32 * f.evaluate(interval.getLeftEndpoint() + stepSize * i);
+		
+		for(int i = 2; i <= numPoints - 2; i += 4)
+			estimation += 12 * f.evaluate(interval.getLeftEndpoint() + stepSize * i);
+		
+		for(int i = 4; i <= numPoints - 4; i += 4)
+			estimation += 14 * f.evaluate(interval.getLeftEndpoint() + stepSize * i);
+		
+		estimation *= (2 * stepSize) / 45;
+	
+		return estimation;
 	}
 	
 }

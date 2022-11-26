@@ -81,6 +81,7 @@ public class IntegerTimeScale extends TimeScale {
 		return this;
 	}
 	
+	@Override
 	public double deltaIntegral(Function f, double lowerBound, double upperBound) 
 		throws NotInTimeScaleException {
 		
