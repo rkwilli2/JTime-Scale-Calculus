@@ -1,6 +1,11 @@
 package timescalecalculus;
 
+import mathutil.Function;
+import mathutil.Interval;
 import timescalecalculus.exceptions.*;
+import timescalecalculus.timescales.DefaultTimeScale;
+import timescalecalculus.timescales.IntegerTimeScale;
+import timescalecalculus.timescales.RealTimeScale;
 
 /**
  * 
@@ -29,28 +34,25 @@ public class Demo {
 				return 3*x*x + 2*x;
 			};
 			
-			
 			// T = R
-				// F(x) = x^3 + x^2
-				// int_{0}^{2} f = 2^3 + 2^2 - 0
-				//				 = 8 + 4 = 12
+				// f' 	 = 6x + 2
+				// f'(2) = 14
+			System.out.print("T=R  @ 2, f'= ");
+			System.out.println(reals.deltaDerivative(f, 2));
 			
-			System.out.print("F, T=R  for [0,2] = ");
-			System.out.println(reals.deltaIntegral(f, 0, 2));
 			
 			// T = Z
-				// F(x) = sum from i=0 to 1 of f(i)
-				// int_{0}^{2} f = 3(0)^2 + 2(0) + 3(1)^2 + 2(1)
-				// 				 =  0 + 3 + 2 = 5
-			System.out.print("F, T=Z  for [0,2] = ");
-			System.out.println(ints.deltaIntegral(f, 0, 2));
+				// delta f    = 3(x+1)^2 + 2(x+1) - 3x^2 - 2x
+				//		      = 6x + 5
+			    // delta f(1) = 11
+			System.out.print("T=Z  @ 1, f'= ");
+			System.out.println(ints.deltaDerivative(f, 1));
 			
 			// T = ts
-				// int_{0}^{2} f = int{0}^{1} f + int_{1}^{2} f
-				//			     = (1)^3 + (1)^2 + 3(1)^2 + 2(1)
-				//			     = 1 + 1 + 3 + 2 = 7
-			System.out.print("F, T=ts for [0,2] = ");
-			System.out.println(ts.deltaIntegral(f, 0, 2));
+				// f delta(2) = 14
+				// f delta(1) = 11
+			System.out.println("T=ts @ 2, f'= " + ts.deltaDerivative(f, 2));
+			System.out.println("T=ts @ 1, f'= " + ts.deltaDerivative(f, 1));
 
 		} catch (TimeScaleException tse) {
 			tse.printStackTrace();

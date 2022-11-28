@@ -1,7 +1,6 @@
 package timescalecalculus;
 
-import java.util.List;
-
+import mathutil.*;
 import timescalecalculus.exceptions.*;
 
 /**
@@ -20,12 +19,12 @@ public abstract class TimeScale {
 	/**
 	 * Machine Epsilon for double-precision arithmetic.
 	 */
-	public static final double MACHINE_EPSILON = 2.2E-16;
+	public static final double EPSILON = 2.2E-16;
 	
 	/**
-	 * Optimal step size for basic central differences to reduce error [2]
+	 * Optimal step size for basic central differences to reduce error
 	 */
-	public static final double DIFF_STEP = Math.pow(MACHINE_EPSILON, 1/3.0);
+	public static final double DIFF_STEP = Math.pow(EPSILON, 1/Math.pow(2, 16));
 	
 	/**
 	 * @param t - Some arbitrary element of the reals
@@ -140,7 +139,7 @@ public abstract class TimeScale {
 		if (tKappa.isRightScattered(t))
 			return (f.evaluate(tKappa.sigma(t)) - f.evaluate(t)) / tKappa.mu(t);
 		
-		// Symmetric difference quotient to approximate the derivative
+		// uses a fininite difference approximation
 		
 		return (f.evaluate(t + DIFF_STEP) - f.evaluate(t - DIFF_STEP)) / (2 * DIFF_STEP);
 	}
@@ -221,11 +220,11 @@ public abstract class TimeScale {
 		double distance = interval.getRightEndpoint() - interval.getLeftEndpoint();
 		int numPoints = (int) distance;
 		
-		// Force bounds on numPoints for both computation/efficiency sake
+		// Force bounds on numPoints for both error reducing & efficiency sake
 		if(numPoints < 7500)
 			numPoints = 7500;
-		if(numPoints > 10000)
-			numPoints = 10000;
+		if(numPoints > 12500)
+			numPoints = 12500;
 		
 		stepSize = distance / numPoints;
 		

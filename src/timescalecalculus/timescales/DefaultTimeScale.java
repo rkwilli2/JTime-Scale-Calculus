@@ -1,8 +1,10 @@
-package timescalecalculus;
+package timescalecalculus.timescales;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import mathutil.*;
+import timescalecalculus.TimeScale;
 import timescalecalculus.exceptions.*;
 
 /**

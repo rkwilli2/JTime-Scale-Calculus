@@ -1,4 +1,4 @@
-package timescalecalculus;
+package mathutil;
 
 /**
  * 

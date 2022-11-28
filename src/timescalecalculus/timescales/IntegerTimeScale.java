@@ -1,5 +1,7 @@
-package timescalecalculus;
+package timescalecalculus.timescales;
 
+import mathutil.*;
+import timescalecalculus.TimeScale;
 import timescalecalculus.exceptions.*;
 
 /**
