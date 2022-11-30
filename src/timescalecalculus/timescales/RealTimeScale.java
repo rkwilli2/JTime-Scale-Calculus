@@ -9,7 +9,7 @@ import timescalecalculus.exceptions.*;
  * An implementation of the time scale of the real numbers
  * 
  * @author Richard Williams
- * @since 11/25/2022
+ * @since 11/28/2022
  */
 public class RealTimeScale extends TimeScale {
 	
@@ -42,6 +42,8 @@ public class RealTimeScale extends TimeScale {
 	@Override
 	public double deltaIntegral(Function f, double lowerBound, double upperBound)
 		throws NotInTimeScaleException {
+		if(lowerBound > upperBound)
+			return -1 * deltaIntegral(f, upperBound, lowerBound);
 		return integrateInterval(f, new Interval(lowerBound, upperBound));
 	}
 

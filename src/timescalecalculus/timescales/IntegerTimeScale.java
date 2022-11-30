@@ -9,7 +9,7 @@ import timescalecalculus.exceptions.*;
  * An implementation of the time scale of the multiple of the integers
  * 
  * @author Richard Williams
- * @since 11/25/2022
+ * @since 11/28/2022
  */
 public class IntegerTimeScale extends TimeScale {
 
@@ -91,6 +91,9 @@ public class IntegerTimeScale extends TimeScale {
 			throw new NotInTimeScaleException(lowerBound);
 		if(!isInTimeScale(upperBound))
 			throw new NotInTimeScaleException(upperBound);
+		
+		if(lowerBound > upperBound)
+			return -1 * deltaIntegral(f, upperBound, lowerBound);
 		
 		double sum = 0;
 		for(double i = lowerBound; i <= upperBound - 1; i += mu(i))

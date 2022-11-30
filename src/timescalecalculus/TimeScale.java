@@ -12,7 +12,7 @@ import timescalecalculus.exceptions.*;
  * implementations included in this library are not sufficient.
  * 
  * @author Richard Williams
- * @since 11/25/2022
+ * @since 11/28/2022
  */
 public abstract class TimeScale {
 
@@ -139,7 +139,7 @@ public abstract class TimeScale {
 		if (tKappa.isRightScattered(t))
 			return (f.evaluate(tKappa.sigma(t)) - f.evaluate(t)) / tKappa.mu(t);
 		
-		// uses a fininite difference approximation
+		// uses a finite difference approximation
 		
 		return (f.evaluate(t + DIFF_STEP) - f.evaluate(t - DIFF_STEP)) / (2 * DIFF_STEP);
 	}
@@ -162,6 +162,9 @@ public abstract class TimeScale {
 			throw new NotInTimeScaleException(lowerBound);
 		if(!isInTimeScale(upperBound))
 			throw new NotInTimeScaleException(upperBound);
+		
+		if(upperBound < lowerBound)
+			return -1 * deltaIntegral(f, upperBound, lowerBound);
 		
 		// If bounds are equal, return 0
 		if(lowerBound == upperBound)
@@ -246,5 +249,6 @@ public abstract class TimeScale {
 	
 		return estimation;
 	}
+
 	
 }

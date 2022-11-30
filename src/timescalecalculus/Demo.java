@@ -1,18 +1,15 @@
 package timescalecalculus;
 
-import mathutil.Function;
-import mathutil.Interval;
+import mathutil.*;
 import timescalecalculus.exceptions.*;
-import timescalecalculus.timescales.DefaultTimeScale;
-import timescalecalculus.timescales.IntegerTimeScale;
-import timescalecalculus.timescales.RealTimeScale;
+import timescalecalculus.timescales.*;
 
 /**
  * 
  * A demonstration on how to use the timescalecalculus package.
  * 
  * @author Richard Williams
- * @since 11/25/2022
+ * @since 11/28/2022
  */
 public class Demo {
 
